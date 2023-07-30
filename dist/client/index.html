@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>8TALLET</title>
+        <style>
+            body {
+                overflow: hidden;
+                margin: 0px;
+            }
+        </style>
+        <link href="font/font-styles.css" rel="stylesheet" type="text/css">
+        <link href="styles.css" rel="stylesheet" type="text/css">
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+    </head>
+
+    <body>
+
+        <div id="selection" class="infoField" style="position:absolute; z-index: 1000;">
+            -
+        </div>
+        <script type="module" src="bundle.js"></script>
+        <div id="infoLink" class="infoBoxLink" style="position:absolute; z-index: 1000;">
+            <a href ="#">[?]</a>
+        </div>
+
+        <div id="infoModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              See <a href = "https://www.8tallet.dk" target="_blank">8TALLET</a> for more information on the building
+              <p>Created using <a href= "https://threejs.org/" target="_blank">three.js</a>, <a href = "https://www.freecadweb.org/" target="_blank">FreeCAD</a>, and many hours of drawing by <a href = "https://www.parit.co.uk" target="_blank">Parit</a></p>
+              <p>To rotate the model use the left mouse button or one finger</p>
+              <p>To zoom in/out on the model use the mouse scroller or pinch with two fingers</p>
+              <p>To move the model use the right mouse button or two fingers</p>
+              <p>Select a home to be able to access a detailed floorplan or to see other homes of the same home type</p>
+              <p>Use the filters section to show/hide entrances, levels or homes with certain numbers of rooms</p>
+              <p>Choose the reset filters button to show all homes</p>
+              <p>Use the reset view button to return to the front-on view</p>
+              <p>The animation is quite resource intensive even when static so it is advised not to have it open if it is not being used</p>
+            </div>
+          
+          </div>
+    </body>
+</html>

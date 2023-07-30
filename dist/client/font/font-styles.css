@@ -1,0 +1,22 @@
+/*
+- - - > |  @font-face  | < - - - 
+*/
+/* Klavika Web Basic Light */
+	@font-face {
+	font-family: 'KlavikaWebBasicLight';
+	src: url('KlavikaWebBasicLight.eot');
+	src: url('KlavikaWebBasicLight.eot?#iefix') format('embedded-opentype'),
+         url('KlavikaWebBasicLight.woff2') format('woff2'),
+         url('KlavikaWebBasicLight.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	}
+
+/*
+- - - > |  Font Classes  | < - - - 
+*/
+.KlavikaWebBasicLight {
+	font-family: 'KlavikaWebBasicLight';
+	font-weight: normal;
+	font-style: normal;
+	}
