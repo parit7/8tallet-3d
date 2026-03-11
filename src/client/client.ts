@@ -13,6 +13,7 @@ mouse = new THREE.Vector2();
 let selection = document.getElementById("selection");
 let locked = false;
 let mouseMoved = false;
+let highlightedApartmentName: string | null = null;
 
 const scene = new THREE.Scene()
 const modelContainer1 = new THREE.Group();
@@ -871,7 +872,7 @@ models1.forEach(modelDetails => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                 roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                 roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -894,7 +895,7 @@ models2.forEach(modelDetails => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -921,7 +922,7 @@ loader3.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -951,7 +952,7 @@ loader4.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -982,7 +983,7 @@ loader8.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1013,7 +1014,7 @@ loader7.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1044,7 +1045,7 @@ loader61.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1075,7 +1076,7 @@ loader6.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1105,7 +1106,7 @@ loader5.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1184,6 +1185,48 @@ function onWindowResize() {
     )
 }
 
+function setApartmentHighlight(apartmentName: string | null) {
+    if (highlightedApartmentName === apartmentName) {
+        return;
+    }
+
+    const recolorApartment = (name: string, useGreen: boolean) => {
+        const apartmentObjects = getObjectsByProperty(scene, "name", name, []);
+
+        for (const apartmentObject of apartmentObjects) {
+            if (!(apartmentObject as THREE.Mesh).isMesh) {
+                continue;
+            }
+
+            const mesh = apartmentObject as THREE.Mesh;
+            const material = mesh.material;
+            const targetMaterial = Array.isArray(material) ? material[0] : material;
+
+            if (!(targetMaterial as THREE.MeshStandardMaterial).color) {
+                continue;
+            }
+
+            const meshMaterial = targetMaterial as THREE.MeshStandardMaterial;
+
+            if (useGreen) {
+                meshMaterial.color.set("green");
+            } else {
+                meshMaterial.color.set(mesh.userData["originalColor"]);
+            }
+        }
+    };
+
+    if (highlightedApartmentName) {
+        recolorApartment(highlightedApartmentName, false);
+    }
+
+    highlightedApartmentName = apartmentName;
+
+    if (highlightedApartmentName) {
+        recolorApartment(highlightedApartmentName, true);
+    }
+}
+
 function onMouseMove(event: MouseEvent) {
     mouseMoved = true;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -1246,27 +1289,26 @@ function onMouseDown(event: MouseEvent) {
 }
 
 function hover() {
-    if (!mouseMoved || locked) {
+    if (locked) {
+        setApartmentHighlight(null);
+        return;
+    }
+
+    if (!mouseMoved) {
         return;
     }
 
     raycaster.setFromCamera(mouse, camera);
-        raycaster.layers.set(0);
-        const intersects = raycaster.intersectObjects(scene.children);
-        
-        if (intersects.length > 0)
-        {
-            if ((intersects[0].object as THREE.Object3D).userData.name)
-            {
-                if ((intersects[0].object as THREE.Object3D).visible)
-                {
-                    if (selection) selection.innerText = (intersects[0].object as THREE.Object3D).userData.address + "\n" + 
-                        (intersects[0].object as THREE.Object3D).userData.name
-                };
-            }
-        }
-    else
-    {
+    raycaster.layers.set(0);
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0 && (intersects[0].object as THREE.Object3D).userData.name && (intersects[0].object as THREE.Object3D).visible) {
+        const hoveredApartmentName = (intersects[0].object as THREE.Object3D).userData.name as string;
+        setApartmentHighlight(hoveredApartmentName);
+        if (selection) selection.innerText = (intersects[0].object as THREE.Object3D).userData.address + "\n" + 
+            (intersects[0].object as THREE.Object3D).userData.name
+    } else {
+        setApartmentHighlight(null);
         if (selection) selection.innerText = '-'
     }
 
