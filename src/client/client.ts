@@ -175,20 +175,14 @@ const resetButton = {
     }
     ,
     resetView: function() {
-        goToViewpoint(0)
+        camera.position.set(0, 5, 10)
+        controls.reset()
+        //camera.updateProjectionMatrix
+        controls.update()
     }
 }
 gui.add(resetButton, 'resetFilters').name('Reset filters');
 gui.add(resetButton, 'resetView').name('Reset view');
-const folderViewpoints = gui.addFolder('Viewpoints');
-folderViewpoints.open(false);
-folderViewpoints.add(viewpointControls, 'frontView').name('Front view');
-folderViewpoints.add(viewpointControls, 'courtyardView').name('Courtyard');
-folderViewpoints.add(viewpointControls, 'streetSideView').name('Street side');
-folderViewpoints.add(viewpointControls, 'topView').name('Top view');
-folderViewpoints.add(viewpointControls, 'southWestView').name('South-west');
-folderViewpoints.add(viewpointControls, 'previousView').name('Previous viewpoint');
-folderViewpoints.add(viewpointControls, 'nextView').name('Next viewpoint');
 const folderHometype = gui.addFolder('Type');
 folderHometype.open(false);
 folderHometype.add( params, 'hometypePenthouse').name('Penthouse').onChange( (value: boolean) => {
