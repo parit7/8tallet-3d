@@ -1,12 +1,10 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import Stats from 'three/examples/jsm/libs/stats.module'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import GUI, { ColorController } from 'lil-gui';
-import { MathUtils, Vector3 } from 'three'
+import GUI from 'lil-gui';
+import { MathUtils } from 'three'
 
 var mouse: THREE.Vector2, raycaster: THREE.Raycaster, INTERSECTED: THREE.Object3D;
 
@@ -14,6 +12,8 @@ raycaster = new THREE.Raycaster();
 mouse = new THREE.Vector2();
 let selection = document.getElementById("selection");
 let locked = false;
+let mouseMoved = false;
+let highlightedApartmentName: string | null = null;
 
 const scene = new THREE.Scene()
 const modelContainer1 = new THREE.Group();
@@ -141,72 +141,37 @@ const params = {
 
 const gui = new GUI( {title: 'Filters'} );
 
+const filterFlags = [
+    'entrance60','entrance62','entrance63','entrance64','entrance65','entrance66','entrance67','entrance68','entrance69','entrance70','entrance71','entrance72','entrance73','entrance74','entrance75','entrance76','entrance77','entrance78','entrance79','entrance80','entrance81','entrance82','entrance83','entrance84','entrance86','entrance88',
+    'level0','level1','level2','level3','level4','level5','level6','level7','level8','level9',
+    'rooms2','rooms3','rooms4','rooms5','rooms6','rooms7',
+    'hometypeApartment','hometypePenthouse','hometypeTownhouse',
+] as const;
+
+function setHomeVisibilityDefaults(visible: boolean) {
+    const objects = getObjectsByProperty(scene, 'objtype', 'home', []);
+
+    for (const object of objects) {
+        object.visible = visible;
+        object.layers.set(visible ? 0 : 1);
+        object.userData['levelvis'] = 1;
+        object.userData['roomsvis'] = 1;
+        object.userData['entrancevis'] = 1;
+        object.userData['hometypevis'] = 1;
+    }
+}
+
+function resetFilterState() {
+    for (const flag of filterFlags) {
+        params[flag] = true;
+    }
+    setHomeVisibilityDefaults(true);
+}
+
 const resetButton = {
     resetFilters: function() {
-        params.entrance60 = true
-        params.entrance62 = true
-        params.entrance63 = true
-        params.entrance64 = true
-        params.entrance65 = true
-        params.entrance66 = true
-        params.entrance67 = true
-        params.entrance68 = true
-        params.entrance69 = true
-        params.entrance70 = true
-        params.entrance71 = true
-        params.entrance72 = true
-        params.entrance73 = true
-        params.entrance74 = true
-        params.entrance75 = true
-        params.entrance76 = true
-        params.entrance77 = true
-        params.entrance78 = true
-        params.entrance79 = true
-        params.entrance80 = true
-        params.entrance81 = true
-        params.entrance82 = true
-        params.entrance84 = true
-        params.entrance86 = true
-        params.entrance88 = true
-       
-        params.level0 = true
-        params.level1 = true
-        params.level2 = true
-        params.level3 = true
-        params.level4 = true
-        params.level5 = true
-        params.level6 = true
-        params.level7 = true
-        params.level8 = true
-        params.level9 = true
-        
-        params.rooms2 = true
-        params.rooms3 = true
-        params.rooms4 = true
-        params.rooms5 = true
-        params.rooms6 = true
-        params.rooms7 = true
-
-        params.hometypeApartment = true
-        params.hometypePenthouse = true
-        params.hometypeTownhouse = true
-    
-        let tempobjarr: THREE.Object3D[] = [];
-        var filtertype = "objtype"
-        var filtervalue = "home"
-        const objects = getObjectsByProperty(scene, filtertype, filtervalue, tempobjarr);
-        
-        for (let i = 0; i < objects.length; i++)
-        {
-            (objects as THREE.Object3D[])[i].visible = true;
-            (objects as THREE.Object3D[])[i].layers.set(0);
-            (objects as THREE.Object3D[])[i].userData['levelvis'] = 1;
-            (objects as THREE.Object3D[])[i].userData['roomsvis'] = 1;
-            (objects as THREE.Object3D[])[i].userData['entrancevis'] = 1;
-            (objects as THREE.Object3D[])[i].userData['hometypevis'] = 1;
-        }
+        resetFilterState()
         gui.load(initGUIValues)
-    
     }
     ,
     resetView: function() {
@@ -296,6 +261,9 @@ folderEntrance.add( params, 'entrance81').name('81').onChange( (value: boolean) 
 });
 folderEntrance.add( params, 'entrance82').name('82').onChange( (value: boolean) => {
     filterObj('entrance', '82', value);
+});
+folderEntrance.add( params, 'entrance83').name('83').onChange( (value: boolean) => {
+    filterObj('entrance', '83', value);
 });
 folderEntrance.add( params, 'entrance84').name('84').onChange( (value: boolean) => {
     filterObj('entrance', '84', value);
@@ -904,7 +872,7 @@ models1.forEach(modelDetails => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                 roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                 roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -927,7 +895,7 @@ models2.forEach(modelDetails => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -954,7 +922,7 @@ loader3.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -984,7 +952,7 @@ loader4.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1015,7 +983,7 @@ loader8.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1046,7 +1014,7 @@ loader7.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1077,7 +1045,7 @@ loader61.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1108,7 +1076,7 @@ loader6.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1138,7 +1106,7 @@ loader5.load(gltf, ({ scene }) => {
             ;const material = new THREE.MeshStandardMaterial( { color: colour } );
             ;(child as THREE.Mesh).material = material
             ,(child as THREE.Mesh).userData = { name: apname , entrance: entrance, level: level, entrancevis: entrancevis, levelvis: levelvis,
-                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode}
+                roomsvis: roomsvis, hometypevis: hometypevis, apcodevis: apcodevis, url: url, pdf: pdf, address: address, rooms: rooms, objtype: objtype, hometype: hometype, apcode: apcode, originalColor: colour}
             ;let geo = (child as THREE.Mesh).geometry
             ;const edges = new THREE.EdgesGeometry((child as THREE.Mesh).geometry);
             /* ;const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 'black', linewidth: 10, linecap: 'round' } ) )
@@ -1217,11 +1185,52 @@ function onWindowResize() {
     )
 }
 
+function setApartmentHighlight(apartmentName: string | null) {
+    if (highlightedApartmentName === apartmentName) {
+        return;
+    }
+
+    const recolorApartment = (name: string, useGreen: boolean) => {
+        const apartmentObjects = getObjectsByProperty(scene, "name", name, []);
+
+        for (const apartmentObject of apartmentObjects) {
+            if (!(apartmentObject as THREE.Mesh).isMesh) {
+                continue;
+            }
+
+            const mesh = apartmentObject as THREE.Mesh;
+            const material = mesh.material;
+            const targetMaterial = Array.isArray(material) ? material[0] : material;
+
+            if (!(targetMaterial as THREE.MeshStandardMaterial).color) {
+                continue;
+            }
+
+            const meshMaterial = targetMaterial as THREE.MeshStandardMaterial;
+
+            if (useGreen) {
+                meshMaterial.color.set("green");
+            } else {
+                meshMaterial.color.set(mesh.userData["originalColor"]);
+            }
+        }
+    };
+
+    if (highlightedApartmentName) {
+        recolorApartment(highlightedApartmentName, false);
+    }
+
+    highlightedApartmentName = apartmentName;
+
+    if (highlightedApartmentName) {
+        recolorApartment(highlightedApartmentName, true);
+    }
+}
+
 function onMouseMove(event: MouseEvent) {
- 
+    mouseMoved = true;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
 }
 
 function onMouseDown(event: MouseEvent) {
@@ -1280,28 +1289,30 @@ function onMouseDown(event: MouseEvent) {
 }
 
 function hover() {
-    if ( locked == false )
-    {
-        raycaster.setFromCamera(mouse, camera);
-        raycaster.layers.set(0);
-        const intersects = raycaster.intersectObjects(scene.children);
-        
-        if (intersects.length > 0)
-        {
-            if ((intersects[0].object as THREE.Object3D).userData.name)
-            {
-                if ((intersects[0].object as THREE.Object3D).visible)
-                {
-                    if (selection) selection.innerText = (intersects[0].object as THREE.Object3D).userData.address + "\n" + 
-                        (intersects[0].object as THREE.Object3D).userData.name
-                };
-            }
-        }
-        else
-        {
-            if (selection) selection.innerText = '-'
-        }
+    if (locked) {
+        setApartmentHighlight(null);
+        return;
     }
+
+    if (!mouseMoved) {
+        return;
+    }
+
+    raycaster.setFromCamera(mouse, camera);
+    raycaster.layers.set(0);
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0 && (intersects[0].object as THREE.Object3D).userData.name && (intersects[0].object as THREE.Object3D).visible) {
+        const hoveredApartmentName = (intersects[0].object as THREE.Object3D).userData.name as string;
+        setApartmentHighlight(hoveredApartmentName);
+        if (selection) selection.innerText = (intersects[0].object as THREE.Object3D).userData.address + "\n" + 
+            (intersects[0].object as THREE.Object3D).userData.name
+    } else {
+        setApartmentHighlight(null);
+        if (selection) selection.innerText = '-'
+    }
+
+    mouseMoved = false;
 }
 
 
@@ -1351,102 +1362,25 @@ function animate() {
     //stats.update()
 }
 
-function filterReset() {
-    params.entrance60 = true
-    params.entrance62 = true
-    params.entrance63 = true
-    params.entrance64 = true
-    params.entrance65 = true
-    params.entrance66 = true
-    params.entrance67 = true
-    params.entrance68 = true
-    params.entrance69 = true
-    params.entrance70 = true
-    params.entrance71 = true
-    params.entrance72 = true
-    params.entrance73 = true
-    params.entrance74 = true
-    params.entrance75 = true
-    params.entrance76 = true
-    params.entrance77 = true
-    params.entrance78 = true
-    params.entrance79 = true
-    params.entrance80 = true
-    params.entrance81 = true
-    params.entrance82 = true
-    params.entrance84 = true
-    params.entrance86 = true
-    params.entrance88 = true
-   
-    params.level0 = true
-    params.level1 = true
-    params.level2 = true
-    params.level3 = true
-    params.level4 = true
-    params.level5 = true
-    params.level6 = true
-    params.level7 = true
-    params.level8 = true
-    params.level9 = true
-    
-    params.rooms2 = true
-    params.rooms3 = true
-    params.rooms4 = true
-    params.rooms5 = true
-    params.rooms6 = true
-    params.rooms7 = true
-
-    params.hometypeApartment = true
-    params.hometypePenthouse = true
-    params.hometypeTownhouse = true
-
-    let tempobjarr: THREE.Object3D[] = [];
-    var filtertype = "objtype"
-    var filtervalue = "home"
-    const objects = getObjectsByProperty(scene, filtertype, filtervalue, tempobjarr);
-    
-    for (let i = 0; i < objects.length; i++)
-    {
-        (objects as THREE.Object3D[])[i].visible = true;
-        (objects as THREE.Object3D[])[i].layers.set(0);
-        (objects as THREE.Object3D[])[i].userData['levelvis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['roomsvis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['entrancevis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['hometypevis'] = 1;
-    }
-}
-
 function filterHideAll() {
-    let tempobjarr: THREE.Object3D[] = [];
-    var filtertype = "objtype"
-    var filtervalue = "home"
-    const objects = getObjectsByProperty(scene, filtertype, filtervalue, tempobjarr);
-    
-    for (let i = 0; i < objects.length; i++)
-    {
-        (objects as THREE.Object3D[])[i].visible = false;
-        (objects as THREE.Object3D[])[i].layers.set(1);
-        (objects as THREE.Object3D[])[i].userData['levelvis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['roomsvis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['entrancevis'] = 1;
-        (objects as THREE.Object3D[])[i].userData['hometypevis'] = 1;
-    }
+    setHomeVisibilityDefaults(false);
 }
 
 function filterObj(filtertype: string, filtervalue: string, value: boolean) {
-    var indexEnt = filtertype + filtervalue;
-    //var indexoldEnt = "old" + filtertype + filtervalue;
-    var state = filtertype + "vis"
-    let tempobjarr: THREE.Object3D[] = [];
-    const objects = getObjectsByProperty(scene, filtertype, filtervalue, tempobjarr);
-    if (params[indexEnt as keyof typeof params] == false) {
+    const indexEnt = filtertype + filtervalue;
+    const state = filtertype + "vis"
+    const objects = getObjectsByProperty(scene, filtertype, filtervalue, []);
+
+    params[indexEnt as keyof typeof params] = value;
+
+    if (value === false) {
         for (let i = 0; i < objects.length; i++) {
             (objects as THREE.Object3D[])[i].visible = false;
             (objects as THREE.Object3D[])[i].layers.set(1);
             (objects as THREE.Object3D[])[i].userData[state] = 0;
         }
     }
-    if ( params[indexEnt as keyof typeof params] == true ) {
+    if (value === true) {
         for (let i = 0; i < objects.length; i++) {
             (objects as THREE.Object3D[])[i].userData[state] = 1;
             if ( (objects as THREE.Object3D[])[i].userData['levelvis'] == 1 &&
